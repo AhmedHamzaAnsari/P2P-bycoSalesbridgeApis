@@ -42,7 +42,7 @@ if (isset($_POST)) {
                 `tank_id`,
                 `products`,
                 `dispenser_id`,
-                `new_reading`,
+                `last_reading`,
                 `created_at`,
                 `created_by`)
                 VALUES
@@ -86,14 +86,20 @@ if (isset($_POST)) {
 
                     }
 
+                }else {
+                    $output = 'Error' . mysqli_error($db) . '<br>' . $sql1;
+
                 }
 
 
 
             }
         } else {
-            echo "Failed to decode JSON string.";
+            $output = "Failed to decode JSON string.";
         }
+    } else {
+        $output = 'Error' . mysqli_error($db) . '<br>' . $query_main;
+
     }
 
 
