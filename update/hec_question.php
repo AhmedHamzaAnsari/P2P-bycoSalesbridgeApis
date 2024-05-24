@@ -8,7 +8,7 @@ if (isset($_POST)) {
     $id=$_POST['id'];
 
 
-   echo $query = "UPDATE `hec_category_questions` SET `status`=$checkboxValue WHERE id='$id'";;
+    $query = "UPDATE `hec_category_questions` SET `status`=$checkboxValue WHERE id='$id'";;
 
     mysqli_query($db, $query);
 

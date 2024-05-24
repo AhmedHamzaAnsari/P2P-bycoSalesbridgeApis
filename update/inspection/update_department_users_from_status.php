@@ -40,6 +40,7 @@ if (isset($_POST)) {
 
 function getting($task_id,$db,$form_id)
 {
+    $datetime = date('Y-m-d H:i:s');
     $sql_query1 = "SELECT * FROM inspector_task where id='$task_id'";
 
     $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
@@ -57,6 +58,7 @@ function getting($task_id,$db,$form_id)
         // Update the status to 1 if the element is found
         if ($index !== false) {
             $data[$index]['status'] = 1;
+            $data[$index]['Completion_time'] = $datetime;
         }
         
         // Print the updated array

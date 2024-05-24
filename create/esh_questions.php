@@ -1,5 +1,5 @@
 <?php
-include("../config.php");
+include ("../config.php");
 session_start();
 if (isset($_POST)) {
     $user_id = $_POST['user_id'];
@@ -8,7 +8,29 @@ if (isset($_POST)) {
     $userData = count($_POST["questions"]);
     // echo 'HAmza';
     if ($_POST["row_id"] != '') {
+        $row_id = $_POST['row_id'];
+        $category = $_POST['category'];
+        $questions = $_POST['questions'];
+        $file_req = $_POST['file_req'];
+        $answer = $_POST['answer'];
+        $dpt = $_POST['selectedValues'];
+        $action_time = $_POST['action_time'];
 
+        $query = "UPDATE `hec_category_questions`
+                  SET
+                  `category_id` = '$category',
+                  `question` = '$questions[0]',
+                  `file` = '$file_req[0]',
+                  `answer` = '$answer[0]',
+                  `dpt` = '$dpt[0]',
+                  `duration` = '$action_time[0]'
+                  WHERE `id` = '$row_id';";
+
+        if (mysqli_query($db, $query)) {
+            $output = 1;
+        } else {
+            $output = 'Error' . mysqli_error($db) . '<br>' . $query;
+        }
 
     } else {
 
@@ -34,7 +56,7 @@ if (isset($_POST)) {
             `created_by`)
             VALUES
             ('$category',
-            '$questions',c
+            '$questions',
             '$file_req',
             '$answer',
             '$dpt',
@@ -44,14 +66,14 @@ if (isset($_POST)) {
             if (mysqli_query($db, $query_count)) {
                 $output = 1;
 
-            }else {
+            } else {
                 $output = 'Error' . mysqli_error($db) . '<br>' . $query_count;
-    
+
             }
 
         }
 
-        
+
     }
 
 

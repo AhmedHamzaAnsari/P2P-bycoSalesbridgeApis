@@ -95,7 +95,9 @@ function getting($id, $db)
             $forms[] = array(
                 "form_id" => $form_id,
                 "form_name" => $form_name,
-                "status" => 0
+                "status" => 0,
+                "Completion_time" => "---",
+                "Completion_By" => "---",
             );
 
 
