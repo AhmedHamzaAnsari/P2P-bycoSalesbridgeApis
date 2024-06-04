@@ -10,9 +10,11 @@ if ($pass != '') {
     $dealer_id = $_GET["dealer_id"];
     if ($pass == $access_key) {
         $sql_query1 = "SELECT dz.*,ds.name as dispenser_name,
-        GROUP_CONCAT(ap.name SEPARATOR ',') AS product_name,
+        GROUP_CONCAT(ap.name SEPARATOR ', ') AS product_name,
         GROUP_CONCAT(dl.lorry_no SEPARATOR ',') AS tank_name,
-        GROUP_CONCAT(dz.name SEPARATOR ',') AS nozel_name
+        GROUP_CONCAT(dz.name SEPARATOR ', ') AS nozel_name,
+        GROUP_CONCAT(dz.last_reading SEPARATOR ', ') AS nozels_last_readings,
+        GROUP_CONCAT(dz.last_date SEPARATOR ', ') AS nozels_last_dates
         FROM dealers_nozzel dz
         join dealers_products as dp on dp.id=dz.products
         join dealers_dispenser as ds on ds.id=dz.dispenser_id

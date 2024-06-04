@@ -202,5 +202,10 @@ if (isset($_POST)) {
 
 
     echo $output;
+
+
+    function new_totalizer(){
+        
+    }
 }
 ?>

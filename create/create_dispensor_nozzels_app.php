@@ -35,6 +35,7 @@ if (isset($_POST)) {
                 $nozzels_products = $item['nozzels_products'];
                 $product_tank = $item['product_tank'];
                 $nozel_last_reading = $item['nozel_last_reading'];
+                $last_date = $item['last_date'];
 
                 $sql1 = "INSERT INTO `dealers_nozzel`
                 (`dealer_id`,
@@ -43,6 +44,7 @@ if (isset($_POST)) {
                 `products`,
                 `dispenser_id`,
                 `last_reading`,
+                `last_date`,
                 `created_at`,
                 `created_by`)
                 VALUES
@@ -52,6 +54,7 @@ if (isset($_POST)) {
                 '$nozzels_products',
                 '$active',
                 '$nozel_last_reading',
+                '$last_date',
                 '$date',
                 '$user_id');";
 
