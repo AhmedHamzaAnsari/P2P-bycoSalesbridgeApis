@@ -7,12 +7,12 @@ $access_key = '03201232927';
 
 $pass = $_GET["key"];
 if ($pass != '') {
+    $id = $_GET["id"];
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT us.*,du.name as pre_name FROM users as us 
-        join department_users as du on du.id=us.privilege
-        where us.privilege!='Admin' and us.independent_exist='1' order by us.id desc;";
+        $sql_query1 = "SELECT nn.*,us.playerId,us.name FROM bycobridge.push_notifications as nn
+       left join users us on us.id=nn.user_id order by nn.id desc;";
 
-        $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
+        $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 
         $thread = array();
         while ($user = $result1->fetch_assoc()) {
@@ -24,7 +24,9 @@ if ($pass != '') {
         echo 'Wrong Key...';
     }
 
-} else {
+} 
+else 
+{
     echo 'Key is Required';
 }
 

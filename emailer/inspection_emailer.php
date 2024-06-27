@@ -29,30 +29,95 @@ $report_timing = "";
 
 $dealer_id = $_GET['dealer_id'];
 $task_id = $_GET['task_id'];
-$get_email = $_GET['email'];
+// $get_email = $_GET['email'];
 
+$tm_id = $_GET['tm_id'];
 
 
 // Check if the current hour is 9 AM
-if ($dealer_id != "" || $task_id != "") {
-    // Execute your PHP script here
+if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
+    $sql_get_cartraige_no = "SELECT us.id as tm_id,
+    us.name as tm_name,
+    us.login as tm_email,
+    du.name as tm_pre,
+    urm.id as rm_id,
+    urm.name as rm_name,
+    urm.login as rm_email,
+    dru.name as rm_pre,
+    nsm.id as nsm_id,
+    nsm.name as nsm_name,
+    nsm.login as nsm_email,
+    dnsm.name as nsm_pre,
+    grm.id as grm_id,
+    grm.name as grm_name,
+    dgrm.name as grm_pre,
+    grm.login as grm_email FROM department_users as du 
+    join users as us on us.privilege=du.id
+    join department_users as dru on dru.id=du.parent_id
+    join users as urm on urm.privilege=dru.id
+    join department_users as dnsm on dnsm.id=dru.parent_id
+    join users as nsm on nsm.privilege=dnsm.id
+    join department_users as dgrm on dgrm.id=dnsm.parent_id
+    join users as grm on grm.privilege=dgrm.id
+    where us.id=$tm_id and du.name='TM' and urm.id=us.subacc_id;";
+    // echo $sql_get_cartraige_no .'<br>';
+    $result_contact = mysqli_query($db, $sql_get_cartraige_no);
 
-    // $sql_get_cartraige_no = "SELECT * FROM dealers where id='$dealer_id';";
-    // // echo $sql_get_cartraige_no .'<br>';
-    // $result_contact = mysqli_query($db, $sql_get_cartraige_no);
+    $count_contact = mysqli_num_rows($result_contact);
+    // echo $count_contact . ' hamza <br>';
 
-    // $count_contact = mysqli_num_rows($result_contact);
-    // // echo $count_contact . ' hamza <br>';
+    if ($count_contact > 0) {
+        while ($row = mysqli_fetch_array($result_contact)) {
+            $tm_id = $row["tm_id"];
+            $tm_name = $row["tm_name"];
+            $tm_email = $row["tm_email"];
+            $tm_pre = $row["tm_pre"];
 
-    // if ($count_contact > 0) {
-    //     while ($row = mysqli_fetch_array($result_contact)) {
-    //         $name = $row["name"];
-    //         $email = 'ahmedhamzaansari.99@gmail.com';
-    //         echo smtp_mailer($email, date('Y-m-d H:i:s'), $name, $dealer_id, $task_id, $db);
+            $rm_id = $row["rm_id"];
+            $rm_name = $row["rm_name"];
+            $rm_email = $row["rm_email"];
+            $rm_pre = $row["rm_pre"];
 
-    //     }
-    // }
-    echo smtp_mailer($get_email, date('Y-m-d H:i:s'), $name, $dealer_id, $task_id, $db);
+            $nsm_id = $row["nsm_id"];
+            $nsm_name = $row["nsm_name"];
+            $nsm_email = $row["nsm_email"];
+            $nsm_pre = $row["nsm_pre"];
+
+            $grm_id = $row["grm_id"];
+            $grm_name = $row["grm_name"];
+            $grm_email = $row["grm_email"];
+            $grm_pre = $row["grm_pre"];
+
+            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $tm_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $rm_name, $dealer_id, $task_id, $db);
+            // echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $nsm_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $grm_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), 'Wasi Sheikh', $dealer_id, $task_id, $db);
+            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), 'Abdul Basit', $dealer_id, $task_id, $db);
+
+        }
+    }
+
+    $eng = "SELECT us.* FROM department_users as du
+    join users as us on us.privilege=du.id
+    where du.department_id=10 and du.name='FE-MANAGER'";
+
+    $result_eng = mysqli_query($db, $eng);
+
+    $count_eng = mysqli_num_rows($result_eng);
+    // echo $count_contact . ' hamza <br>';
+
+    if ($count_eng > 0) {
+        while ($row = mysqli_fetch_array($result_eng)) {
+            $name = $row["name"];
+            $email = $row["login"];
+          
+
+            echo smtp_mailer($email, date('Y-m-d H:i:s'), $name, $dealer_id, $task_id, $db);
+            
+        }
+    }
+
 
 
 
@@ -217,7 +282,7 @@ function count_per($connect, $task_id, $dealer_id, $db)
 
     }
 
-    $total_sum = $r_yes+$r_no+$r_n_a;
+    $total_sum = $r_yes + $r_no + $r_n_a;
 
 
     // Initialize variables
@@ -266,19 +331,7 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     // $alert_link = "http://151.106.17.246:8080/sitara/email_alert_link.php?id=" . $cartraige_id . "&from=" . $alert_today . "&name=" . $cartraige_name . "&interval=" . $currentHour . "&e_id=" . $to . "";
 
     $file_name5 = 'files/Inspection Report_' . md5(rand()) . '.pdf';
-    $html_code5 = '<div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                    <h2 style="font-weight: bold;color: #3e3ea7;font-size: 72px;font-style: italic;font-weight: bold;text-decoration: underline">Cnergyico</h2>
-                    
-                    </div>
-                      
-                    
-
-                    
-
-                </div>
-            </div>';
+    $html_code5 = '';
 
     $html_code5 .= get_task_inspection_response($connect, $task_id, $dealer_id, $db);
 
@@ -309,7 +362,7 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     $mail->IsHTML(true); //Sets message type to HTML				
     $mail->AddAttachment($file_name5);
     $mail->Subject = $dealer_name . ' Inspection Report ' . $time; //Sets the Subject of the message
-    $mail->Body = '<h1>Cnergyico.<h1><h3>Please Find details report of Inspectin in attach PDF File.</h3>'; //An HTML or plain text message body
+    $mail->Body = '<h3>Dear Team,<br>Following is the Inspection Report attached in PDF Format for your review and action <br>Regards,</h3>'; //An HTML or plain text message body
     if ($mail->Send()) //Send an Email. Return true on success or false on error
     {
 

@@ -1,0 +1,5 @@
+http://151.106.17.246:8080/bycoBridgeApis/emailer/manual_report_emailer/inspection_emailer.php?dealer_id=455&task_id=105&email=ali.nazim@cnergyico.com&name=Ali%20Nazim
+http://151.106.17.246:8080/bycoBridgeApis/emailer/manual_report_emailer/ehs_emailer.php?dealer_id=455&task_id=105&email=ali.nazim@cnergyico.com&name=Ali%20Nazim
+http://151.106.17.246:8080/bycoBridgeApis/emailer/manual_report_emailer/fuel_decant_emailer.php?dealer_id=455&task_id=105&email=ali.nazim@cnergyico.com&name=Ali%20Nazim
+http://151.106.17.246:8080/bycoBridgeApis/emailer/manual_report_emailer/profitibilty_emailer.php?dealer_id=455&task_id=105&email=ali.nazim@cnergyico.com&name=Ali%20Nazim
+http://151.106.17.246:8080/bycoBridgeApis/emailer/manual_report_emailer/recon_emailer.php?dealer_id=455&task_id=105&email=ali.nazim@cnergyico.com&name=Ali%20Nazim

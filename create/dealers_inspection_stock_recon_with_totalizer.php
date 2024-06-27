@@ -26,12 +26,11 @@ if (isset($_POST)) {
     $total_days = $_POST["total_days"];
     $last_date = $_POST["last_date"];
 
-    $last_date = $_POST["last_date"];
 
 
     $date = date('Y-m-d H:i:s');
 
-    function new_totalizer($is_totalizer_data, $db, $dealer_id, $date, $user_id)
+    function new_totalizer($is_totalizer_data, $db, $dealer_id, $date, $user_id,$last_date)
     {
         $dataArray = json_decode($is_totalizer_data, true);
 
@@ -67,7 +66,8 @@ if (isset($_POST)) {
                 if (mysqli_query($db, $readings)) {
                     $update_dips = "UPDATE `dealers_nozzel`
                     SET `last_reading` = '$closing',
-                        `totalizer` = (totalizer+1)
+                        `totalizer` = (totalizer+1),
+                        `last_date` = '$date'
                     WHERE `id` = '$id';";
 
                     if (mysqli_query($db, $update_dips)) {
@@ -177,7 +177,8 @@ if (isset($_POST)) {
                         // $output = 1;
                         $update_dips = "UPDATE `dealers_nozzel`
                         SET
-                        `last_reading` = '$closing'
+                        `last_reading` = '$closing',
+                        `last_date` = '$date'
                         WHERE `id` = '$id';";
 
                         if (mysqli_query($db, $update_dips)) {
@@ -196,7 +197,7 @@ if (isset($_POST)) {
                     }
                 }
 
-                new_totalizer($is_totalizer_data, $db, $dealer_id, $date, $user_id);
+                new_totalizer($is_totalizer_data, $db, $dealer_id, $date, $user_id,$last_date);
 
 
                 foreach ($dataArraytanks as $tanki) {
@@ -234,9 +235,9 @@ if (isset($_POST)) {
                         $update_dips = "UPDATE `dealers_lorries`
                         SET
                         `current_dip` = '$closing_dip',
-                        `update_time` = '$closing'
+                        `current_reading` = '$closing',
+                        `update_time` = '$date'
                         WHERE `id` = '$tank_id';";
-
                         if (mysqli_query($db, $update_dips)) {
 
 
@@ -265,7 +266,7 @@ if (isset($_POST)) {
     echo $output;
 
 
-
-
+   
 }
+
 ?>

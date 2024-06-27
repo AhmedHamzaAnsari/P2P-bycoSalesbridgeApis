@@ -1,5 +1,5 @@
 <?php
-include("../config.php");
+include ("../config.php");
 session_start();
 
 if (isset($_POST)) {
@@ -19,8 +19,8 @@ if (isset($_POST)) {
     `inspection_id`,
     `data`,
     `dpt_id`,
-`form_id`,
-`form_name`,
+    `form_id`,
+    `form_name`,
     `created_at`,
     `created_by`)
     VALUES
@@ -175,6 +175,9 @@ if (isset($_POST)) {
 
 
             echo $output;
+
+            send_email($user_id, $dealer_id, $inspection_id);
+
         }
     }
 
@@ -183,6 +186,28 @@ if (isset($_POST)) {
 
 
 }
+function send_email($tm_id, $dealer_id, $task_id)
+{
+    $curl = curl_init();
 
+    curl_setopt_array(
+        $curl,
+        array(
+            CURLOPT_URL => 'http://151.106.17.246:8080/bycobridgeApis/emailer/inspection_emailer.php?dealer_id=' . $dealer_id . '&task_id=' . $task_id . '&tm_id=' . $tm_id . '',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        )
+    );
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+    // echo $response;
+}
 
 ?>
