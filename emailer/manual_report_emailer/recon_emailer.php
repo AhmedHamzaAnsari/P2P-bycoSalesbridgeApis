@@ -206,9 +206,9 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
                 $output .= '<tr>
                 <th>' . $item["name"] . '</th>
                 <td>' . $item["opening_dip"] . '</td>
-                <td>' . $item["closing_dip"] . '</td>
-                <td></td>
                 <td>' . $item["opening"] . '</td>
+                <td></td>
+                <td>' . $item["closing_dip"] . '</td>
                 <td>' . $item["closing"] . '</td>
                 </tr>';
             }
@@ -441,9 +441,9 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     $mail->Port = 587;
     $mail->IsHTML(true);
     $mail->CharSet = 'UTF-8';
-    $mail->Username = "sitaras222@gmail.com";
-    $mail->Password = "kjyqvamkejoqtbki";
-    $mail->SetFrom("sitaras222@gmail.com");
+    $mail->Username = "mail.p2pbridge@gmail.com";
+    $mail->Password = "hfnsbnkvauakgepf";
+    $mail->SetFrom("mail.p2pbridge@gmail.com");
     $mail->AddAddress($to);
     $mail->WordWrap = 50; //Sets word wrapping on the body of the message to a given number of characters
     $mail->IsHTML(true); //Sets message type to HTML				
