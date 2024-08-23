@@ -69,6 +69,15 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
     // echo $count_contact . ' hamza <br>';
 
     if ($count_contact > 0) {
+
+        $sql = "SELECT * FROM bycobridge.dealers where id=$dealer_id";
+
+        // echo $sql;
+
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_array($result);
+
+        $dealer_name = $row['name'];
         while ($row = mysqli_fetch_array($result_contact)) {
             $tm_id = $row["tm_id"];
             $tm_name = $row["tm_name"];
@@ -90,37 +99,38 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
             $grm_email = $row["grm_email"];
             $grm_pre = $row["grm_pre"];
 
-            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $tm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $rm_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
             // echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $nsm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $grm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), 'Wasi Sheikh', $dealer_id, $task_id, $db);
-            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), 'Abdul Basit', $dealer_id, $task_id, $db);
+            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
 
         }
-    }
+        
+        $eng = "SELECT us.* FROM department_users as du
+        join users as us on us.privilege=du.id
+        where du.department_id=10 and du.name='FE-MANAGER'";
 
-    $eng = "SELECT us.* FROM department_users as du
-    join users as us on us.privilege=du.id
-    where du.department_id=10 and du.name='FE-MANAGER'";
+        $result_eng = mysqli_query($db, $eng);
 
-    $result_eng = mysqli_query($db, $eng);
+        $count_eng = mysqli_num_rows($result_eng);
+        // echo $count_contact . ' hamza <br>';
 
-    $count_eng = mysqli_num_rows($result_eng);
-    // echo $count_contact . ' hamza <br>';
+        if ($count_eng > 0) {
+            while ($row = mysqli_fetch_array($result_eng)) {
+                $name = $row["name"];
+                $email = $row["login"];
 
-    if ($count_eng > 0) {
-        while ($row = mysqli_fetch_array($result_eng)) {
-            $name = $row["name"];
-            $email = $row["login"];
-          
 
-            echo smtp_mailer($email, date('Y-m-d H:i:s'), $name, $dealer_id, $task_id, $db);
-            
+                echo smtp_mailer($email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+
+            }
         }
+
+
+
     }
-
-
 
 
 } else {
@@ -180,78 +190,106 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
 
     // Decode JSON string into an array
     $data = json_decode($jsonString, true);
-    $output = 'Report Name : ' . $data[0]['form_name'] . ' <br/>
+    $output .= 'Report Name : ' . $data[0]['form_name'] . ' <br/>
         Date of Audit : ' . $row["time"] . ' <br/>
         Complete Time : ' . $data[0]['Completion_time'] . ' <br/>
         Site Name : ' . $row["dealer_name"] . ' <br/>
         Name of Auditor(s) : ' . $row['user_name'] . '<hr>';
-    $sql_query1 = "
-    SELECT * FROM dealers_profitability as dp
-    join dealers_profitability_main as pm on pm.id=dp.main_id
-    JOIN dealers AS dd ON dd.id = dp.dealer_id
-    where pm.task_id=$task_id and pm.dealer_id=$dealer_id;
-    ";
+      
+        // Fetching data from `dealers_profitability_main`
+        $sql = "SELECT * FROM bycobridge.dealers_profitability_main WHERE task_id=$task_id ORDER BY id DESC";
+        $result = $db->query($sql);
+        
+        $data = [];
+        
+        while ($row = $result->fetch_assoc()) {
+            $id = $row["id"];
+            $type = $row["type"];
+        
+            $myArray = [];
+        
+            // Fetching individual retailer profitability details
+            $get_orders = "SELECT id, retailer_profitability, $type AS data_val 
+                           FROM bycobridge.dealers_profitability 
+                           WHERE main_id=$id";
+            $result_orders = $db->query($get_orders);
+        
+            while ($row_2 = $result_orders->fetch_assoc()) {
+                // Add each retailer's profitability data to $myArray
+                $myArray[] = $row_2;
+            }
+        
+            // Combine data into a structured array
+            $dealerProductCounts = [
+                "id" => $id,
+                "type" => $type,
+                "data" => $myArray,
+            ];
+        
+            // Append to $data array
+            $data[] = $dealerProductCounts;
+        }
+        
+        // Initialize $output for HTML content
+        $output .= '<h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Dealer Profitability Report</h6>';
+        
+        // Start the table structure
+        $output .= '
+        <style>
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+            }
+            th {
+                background-color: #f2f2f2;
+                text-align: left;
+            }
+        </style>';
+        
+        // Iterate through the $data array to build the table
+        foreach ($data as $dealer) {
+            // Create table headers for each dealer's data
+            $output .= '
+            <table class="dynamic_table" style="width:100%">
+                <tr>
+                    <th>Dealer Profitability</th>
+                    <th>' . $dealer["type"] . '</th>
+                </tr>';
+        
+            $total_data_val = 0;
+        
+            // Iterate through the 'data' sub-array for each dealer
+            foreach ($dealer["data"] as $profitability) {
+                $output .= '
+                <tr>
+                    <td>' . $profitability["retailer_profitability"] . '</td>
+                    <td>' . $profitability["data_val"] . '</td>
+                </tr>';
+        
+                // Sum up the data_val for the Net Income row
+                $total_data_val += floatval($profitability["data_val"]);
+            }
+        
+            // Add the Net Income row for each dealer
+            // $output .= '
+            // <tr>
+            //     <th>Net Income</th>
+            //     <td>' . number_format($total_data_val, 2) . '</td>
+            // </tr>';
+        
+            // Close the table
+            $output .= '</table><br>';
+        }
+        
+        // Output the final HTML content
+        echo $output;
+        
 
-    $stmt = $db->prepare($sql_query1);
-    $stmt->execute();
-    $result1 = $stmt->get_result();
-    $output .= '
-                <style>
-                    table, th, td {
-                        border: 1px solid black;
-                        border-collapse: collapse;
-                    }
-                    th, td {
-                        padding:10px;
-                    }
-                    th {
-                        border: 1px solid;
-                        padding: 8px;
-                        text-align: left;
-                        background-color: #f2f2f2;
-                    }
-                </style>';
-    $output .= '
-    <h6 style="text-align: center;padding: 3px 11px;background: #f2f2f2;">Dealer Profitability</h6>
-    <table class="dynamic_table" style="width:100%">
-        <tr>
-            <th>Dealer Profitability</th>
-            <th>CF</th>
-            <th>SF</th>
-            <th>DF</th>
-        </tr>';
 
-    $sum_cf = 0;
-    $sum_sf = 0;
-    $sum_df = 0;
-    while ($taskDetails = $result1->fetch_assoc()) {
-        $retailer_profitability = $taskDetails["retailer_profitability"];
-        $cf = $taskDetails["cf"];
-        $sf = $taskDetails["sf"];
-        $df = $taskDetails["df"];
-
-        $sum_cf += floatval($cf);
-        $sum_sf += floatval($sf);
-        $sum_df += floatval($df);
-
-        $output .= '<tr>
-            <th>' . $retailer_profitability . '</th>
-            <td>' . $cf . '</td>
-            <td>' . $sf . '</td>
-            <td>' . $df . '</td>
-        </tr>';
-
-
-    }
-    $output .= '<tr>
-    <th>Net Income</th>
-    <td>' . number_format($sum_cf, 2) . '</td>
-    <td>' . number_format($sum_sf, 2) . '</td>
-    <td>' . number_format($sum_df, 2) . '</td>
-</tr>';
-
-
-    $stmt->close();
+    // $stmt->close();
     return $output;
 }
 
@@ -414,9 +452,9 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     $mail->Port = 587;
     $mail->IsHTML(true);
     $mail->CharSet = 'UTF-8';
-    $mail->Username = "mail.p2pbridge@gmail.com";
-    $mail->Password = "hfnsbnkvauakgepf";
-    $mail->SetFrom("mail.p2pbridge@gmail.com");
+    $mail->Username = "byco.alertinfo@gmail.com";
+    $mail->Password = "cocrqreeqfbovzvi";
+    $mail->SetFrom("byco.alertinfo@gmail.com");
     $mail->AddAddress($to);
     $mail->WordWrap = 50; //Sets word wrapping on the body of the message to a given number of characters
     $mail->IsHTML(true); //Sets message type to HTML				

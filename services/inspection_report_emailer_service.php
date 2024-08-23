@@ -2,7 +2,7 @@
 //fetch.php  
 ini_set('max_execution_time', '0');
 $url1 = $_SERVER['REQUEST_URI'];
-header("Refresh: 20; URL=$url1");
+header("Refresh: 70; URL=$url1");
 include ("../config.php");
 
 

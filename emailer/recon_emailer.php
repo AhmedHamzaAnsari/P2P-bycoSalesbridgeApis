@@ -70,6 +70,15 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
     // echo $count_contact . ' hamza <br>';
 
     if ($count_contact > 0) {
+
+        $sql = "SELECT * FROM bycobridge.dealers where id=$dealer_id";
+
+        // echo $sql;
+
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_array($result);
+
+        $dealer_name = $row['name'];
         while ($row = mysqli_fetch_array($result_contact)) {
             $tm_id = $row["tm_id"];
             $tm_name = $row["tm_name"];
@@ -91,14 +100,14 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
             $grm_email = $row["grm_email"];
             $grm_pre = $row["grm_pre"];
 
-            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $tm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $rm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $nsm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $grm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), 'Wasi Sheikh', $dealer_id, $task_id, $db);
-            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), 'Abdul Basit', $dealer_id, $task_id, $db);
-            echo smtp_mailer('ali.nazim@cnergyico.com', date('Y-m-d H:i:s'), 'Ali Nazim', $dealer_id, $task_id, $db);
-            echo smtp_mailer('usmanhameed@gmail.com', date('Y-m-d H:i:s'), 'Usman Hameed', $dealer_id, $task_id, $db);
+            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('ali.nazim@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('usmanhameed@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
 
         }
     }
@@ -129,8 +138,6 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
    JOIN dealers AS dd ON dd.id = ii.dealer_id
    where ii.id=$task_id and ii.dealer_id=$dealer_id";
 
-    // echo $sql;
-
     $result = mysqli_query($db, $sql);
     $row = mysqli_fetch_array($result);
     $jsonStringmain = $row["form_json"];
@@ -155,8 +162,6 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         // Encode the filtered array back to JSON
         $filteredJsonString = json_encode($filteredData, JSON_PRETTY_PRINT);
 
-        // Output the filtered JSON string
-        // echo $filteredJsonString;
     } else {
         echo "Failed to decode JSON.";
     }
@@ -169,8 +174,7 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         Complete Time : ' . $data[0]['Completion_time'] . ' <br/>
         Site Name : ' . $row["dealer_name"] . ' <br/>
         Name of Auditor(s) : ' . $row['user_name'] . '<hr>';
-    $sql_query1 = "
-        SELECT rn.*,dp.name as product_name,dd.name as dealer_name FROM bycobridge.dealer_stock_recon_new  as rn
+    $sql_query1 = "SELECT rn.*,dp.name as product_name,dd.name as dealer_name FROM bycobridge.dealer_stock_recon_new  as rn
         join all_products as dp on dp.id=rn.product_id
         JOIN dealers AS dd ON dd.id = rn.dealer_id
         where rn.task_id=$task_id and rn.dealer_id=$dealer_id group by rn.product_id;
@@ -179,7 +183,6 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
     $stmt = $db->prepare($sql_query1);
     $stmt->execute();
     $result1 = $stmt->get_result();
-
 
     while ($taskDetails = $result1->fetch_assoc()) {
         $total_days = $taskDetails["total_days"];
@@ -202,17 +205,12 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         $is_totalizer = $taskDetails["is_totalizer_data"];
         $variance_of_sales = $taskDetails["variance_of_sales"];
         $average_daily_sales = $taskDetails["average_daily_sales"];
-        // print_r($is_totalizer);
-        // Decode JSON string into an array
-
 
         $output .= '<p style="background: #e3dede;padding: 5px 7px;text-align: center;">Stock Reconciliation ' . $product_name . '</p>
         Product : ' . $product_name . ' <br/>
         Total Days : ' . $total_days . ' <br/>
         From : ' . $last_recon_date . ' <br/>
         To  : ' . $created_at . ' <br/>';
-
-
 
         $output .= "<hr>";
         $output .= '
@@ -254,32 +252,25 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
 
         // Check if json_decode returned an array
         if (is_array($data_main)) {
-            // Initialize an array to hold filtered items
-            $filteredData = array();
-
-            // Iterate through each item in the array
             foreach ($data_main as $item) {
-                // Check if the form_name is 'Inspection'
                 $output .= '<tr>
                 <th>' . $item["name"] . '</th>
-                <td>' . $item["opening_dip"] . '</td>
-                <td>' . $item["opening"] . '</td>
+                <td>' . format_amount($item["opening_dip"]) . '</td>
+                <td>' . format_amount($item["opening"]) . '</td>
                 <td></td>
-                <td>' . $item["closing_dip"] . '</td>
-                <td>' . $item["closing"] . '</td>
+                <td>' . format_amount($item["closing_dip"]) . '</td>
+                <td>' . format_amount($item["closing"]) . '</td>
                 </tr>';
             }
-
-
         } else {
             echo "Failed to decode JSON.";
         }
 
         $output .= '<tr>
         <th colspan="2">Opening Stock</th>
-        <td>' . $sum_of_opening . '</td>
+        <td>' . format_amount($sum_of_opening) . '</td>
         <th colspan="2">Physical Stock</th>
-        <td>' . $sum_of_closing . '</td>
+        <td>' . format_amount($sum_of_closing) . '</td>
     </tr>';
         $output .= '</table>';
 
@@ -293,43 +284,40 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
             <th>Opening (A)</th>
             <th>Closing (B)</th>
             <th>Sales (B-A)</th>
-
             </tr>';
 
         $data_array = json_decode($nozzle, true);
 
-        // Access the elements of the array
         foreach ($data_array as $item) {
             $output .= ' <tr>
                 <th>' . $item["dispenser_name"] . ' - ' . $item["name"] . '</th>
                 <td></td>
                 <td></td>
-                <td>' . $item["opening"] . '</td>
-                <td>' . $item["closing"] . '</td>
-                <td>' . (floatval($item["closing"]) - floatval($item["opening"])) . '</td>
+                <td>' . format_amount($item["opening"]) . '</td>
+                <td>' . format_amount($item["closing"]) . '</td>
+                <td>' . format_amount(floatval($item["closing"]) - floatval($item["opening"])) . '</td>
                 </tr>';
         }
-        // Check if json_decode returned an array
 
         $data_is_totalizer_data = json_decode($is_totalizer, true);
-        // Access the elements of the array
+
         foreach ($data_is_totalizer_data as $item) {
             $output .= ' <tr>
                 <th>' . $item["dispenser_name"] . ' - ' . $item["name"] . ' (Change Totalizer)</th>
                 <td></td>
                 <td></td>
-                <td>' . $item["opening"] . '</td>
-                <td>' . $item["closing"] . '</td>
-                <td>' . (floatval($item["closing"]) - floatval($item["opening"])) . '</td>
+                <td>' . format_amount($item["opening"]) . '</td>
+                <td>' . format_amount($item["closing"]) . '</td>
+                <td>' . format_amount(floatval($item["closing"]) - floatval($item["opening"])) . '</td>
                 </tr>';
         }
-        // Check if json_decode returned an array
+
         $output .= '<tr>
         <td></td>
         <td></td>
         <td></td>
         <th colspan="2">Total Sales for the Period</th>
-        <td>' . $total_sales . '</td>
+        <td>' . format_amount($total_sales) . '</td>
     </tr>';
 
         $output .= '</table>';
@@ -340,16 +328,13 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         <table class="dynamic_table" style="width:100%">
             <tr>
                 <th>Total Reciepts</th>
-                <td class="">' . $total_recipt . ' (IN LTRS)</td>
-
+                <td class="">' . format_amount($total_recipt) . ' (IN LTRS)</td>
             </tr>
-
         </table>
     </div>
     <div class="col-md-12">
         <p style="background: #e3dede;padding: 5px 7px;text-align: center;">Final Analysis
         </p>
-      
     </div>';
 
         $output .= '<div class="col-md-12">
@@ -359,18 +344,15 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
             <th>(D) Receipts</th>
             <th>(E) Sales</th>
             <th>(C+D-E) Equals to</th>
-            <th>Book Value</th>
-
-
+            <th>Book Stock</th>
         </tr>
         <tr>
-            <td>' . $sum_of_opening . '</td>
-            <td>' . $total_recipt . '</td>
-            <td>' . $total_sales . '</td>
+            <td>' . format_amount($sum_of_opening) . '</td>
+            <td>' . format_amount($total_recipt) . '</td>
+            <td>' . format_amount($total_sales) . '</td>
             <td style="text-align: center;">=</td>
-            <td>' . $book_value . '</td>
+            <td>' . format_amount($book_value) . '</td>
         </tr>
-
     </table>
 </div>';
         $output .= ' <div class="col-md-12">
@@ -380,41 +362,25 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         <th>(G) Book Stock</th>
         <th>(F-G) Equals to</th>
         <th>Variance</th>
-
-
     </tr>
     <tr>
-        <td>' . $sum_of_closing . '</td>
-        <td>' . $book_value . '</td>
+        <td>' . format_amount($sum_of_closing) . '</td>
+        <td>' . format_amount($book_value) . '</td>
         <td style="text-align: center;">=</td>
-        <td>' . $variance . '</td>
+        <td>' . format_amount($variance) . '</td>
     </tr>
-
 </table>
 </div>';
 
-        $output .= '<div class="col-md-12">
-<p style="background: #e3dede;padding: 5px 7px;text-align: center;">
-</p>
-<table class="dynamic_table" style="width:100%">
-    <tr>
-        <th class="w-50">Remarks</th>
-        <td class="w-50" class="">' . $remark . '</td>
-
-    </tr>
-
-</table>
-</div>
+        $output .= '
 <div class="col-md-12">
 <p style="background: #e3dede;padding: 5px 7px;text-align: center;">
 </p>
 <table class="dynamic_table" style="width:100%">
     <tr>
         <th class="w-50">Shortage Claim for the period (TLs short received by in Ltrs)</th>
-        <td class="w-50" class="">' . $shortage_claim . '</td>
-
+        <td class="w-50" class="">' . format_amount($shortage_claim) . '</td>
     </tr>
-
 </table>
 </div>
 <div class="col-md-12">
@@ -423,22 +389,18 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
 <table class="dynamic_table" style="width:100%">
     <tr>
         <th class="w-50">Net Gain or Loss</th>
-        <td class="w-50" class="">' . $variance . '</td>
-
+        <td class="w-50" class="">' . format_amount($variance) . '</td>
     </tr>
-
 </table>
 </div>';
-$output .= '<div class="col-md-12">
+        $output .= '<div class="col-md-12">
 <p style="background: #e3dede;padding: 5px 7px;text-align: center;">
 </p>
 <table class="dynamic_table" style="width:100%">
     <tr>
         <th class="w-50">Variance as % of Sales (for the period.)</th>
-        <td class="w-50" class="">'.$variance_of_sales.'</td>
-
+        <td class="w-50" class="">' . format_amount($variance_of_sales) . '</td>
     </tr>
-
 </table>
 </div>
 <div class="col-md-12">
@@ -447,16 +409,36 @@ $output .= '<div class="col-md-12">
 <table class="dynamic_table" style="width:100%">
     <tr>
         <th class="w-50">Average Daily sales</th>
-        <td class="w-50" class="">'.$average_daily_sales.'</td>
-
+        <td class="w-50" class="">' . format_amount($average_daily_sales) . '</td>
     </tr>
-
+</table>
+</div>
+<div class="col-md-12">
+<p style="background: #e3dede;padding: 5px 7px;text-align: center;">
+</p>
+<table class="dynamic_table" style="width:100%">
+    <tr>
+        <th class="w-50">Remarks</th>
+        <td class="w-50" class="">' . $remark . '</td>
+    </tr>
 </table>
 </div>';
     }
 
     $stmt->close();
+    // Replace fuel types
+    $output = str_replace(['PMG', 'pmg', 'Pmg'], 'Gasoline', $output);
+    $output = str_replace(['HSD', 'Hsd', 'hsd'], 'Diesel', $output);
+
     return $output;
+}
+
+// Helper function to format amounts
+function format_amount($amount) {
+    if (is_numeric($amount)) {
+        return number_format($amount, 2);
+    }
+    return $amount;
 }
 
 
@@ -498,9 +480,9 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     $mail->Port = 587;
     $mail->IsHTML(true);
     $mail->CharSet = 'UTF-8';
-    $mail->Username = "mail.p2pbridge@gmail.com";
-    $mail->Password = "hfnsbnkvauakgepf";
-    $mail->SetFrom("mail.p2pbridge@gmail.com");
+    $mail->Username = "byco.alertinfo@gmail.com";
+    $mail->Password = "cocrqreeqfbovzvi";
+    $mail->SetFrom("byco.alertinfo@gmail.com");
     $mail->AddAddress($to);
     $mail->WordWrap = 50; //Sets word wrapping on the body of the message to a given number of characters
     $mail->IsHTML(true); //Sets message type to HTML				

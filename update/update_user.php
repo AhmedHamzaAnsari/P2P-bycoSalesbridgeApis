@@ -22,7 +22,9 @@ if (isset($_POST)) {
     // Existing code...
     $date = date("Y-m-d H:i:s");
 
-    $query = "UPDATE users SET name='$name',
+    $query = "UPDATE users SET 
+    name='$name',
+    login='$email',
      privilege='$sales_role',
      password='$encriped',
      description='$desc',

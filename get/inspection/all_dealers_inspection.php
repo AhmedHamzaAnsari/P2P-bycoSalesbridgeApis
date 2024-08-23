@@ -21,7 +21,7 @@ if ($pass != '') {
                 join dealers as dd on dd.id=it.dealer_id
                 join users as us on us.id=it.user_id 
                 join department_users as du on du.id=us.privilege
-                join department as dt on dt.id=du.department_id where it.created_at>='$from' and it.created_at<='$to';";
+                join department as dt on dt.id=du.department_id where it.time>='$from' and it.time<='$to';";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
 

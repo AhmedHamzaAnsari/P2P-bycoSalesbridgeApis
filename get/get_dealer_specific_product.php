@@ -10,7 +10,7 @@ $id=$_GET["id"];
 $dealer_id=$_GET["dealer_id"];
 if ($pass != '') {
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT * FROM dealers_products where id=$id and dealer_id=$dealer_id;";
+        $sql_query1 = "SELECT * FROM dealers_products where name=$id and dealer_id=$dealer_id;";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
 

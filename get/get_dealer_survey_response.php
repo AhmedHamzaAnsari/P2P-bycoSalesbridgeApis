@@ -35,7 +35,7 @@ if ($pass != '') {
             $get_orders = "SELECT sr.*,sq.question,rf.file as cancel_file FROM survey_response as sr 
             join survey_category_questions as sq on sq.id=sr.question_id
             LEFT JOIN survey_response_files rf ON (rf.question_id = sr.question_id and rf.inspection_id=sr.inspection_id)
-            where sr.category_id=$id and sr.inspection_id='$inspection_id' and sr.dealer_id='$dealer_id';";
+            where sr.category_id=$id and sr.inspection_id='$inspection_id' and sr.dealer_id='$dealer_id' group by sr.question_id;";
             // echo $get_orders .'<br>';
             $result_orders = $db->query($get_orders);
 

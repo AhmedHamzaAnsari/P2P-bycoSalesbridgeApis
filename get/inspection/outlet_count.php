@@ -11,29 +11,8 @@ if ($pass != '') {
         $id = $_GET["id"];
         $pre = $_GET["pre"];
 
-        // if($pre == 'ZM'){
-
-        //     $sql_query1 = "SELECT * FROM dealers where zm=$id";
-        // }
-        // elseif($pre == 'TM'){
-            
-        //     $sql_query1 = "SELECT * FROM dealers where tm=$id";
-        // }
-        // else{
-        //     $sql_query1 = "SELECT * FROM dealers where asm=$id";
-
-        // }
-
-
-        // $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
-
-        // $thread = array();
-        // while ($user = $result1->fetch_assoc()) {
-        //     $thread[] = $user;
-        // }
-        // echo json_encode($thread);
+        
         $sql_query1 = "SELECT * FROM users where dealer_ids!='' and id='$id' order by id desc;";
-        // left join department_users as dup on dup.id=du.parent_id order by du.id asc;";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
 

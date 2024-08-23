@@ -68,6 +68,14 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
     // echo $count_contact . ' hamza <br>';
 
     if ($count_contact > 0) {
+        $sql = "SELECT * FROM bycobridge.dealers where id=$dealer_id";
+
+        // echo $sql;
+
+        $result = mysqli_query($db, $sql);
+        $row = mysqli_fetch_array($result);
+        
+        $dealer_name = $row['name'];
         while ($row = mysqli_fetch_array($result_contact)) {
             $tm_id = $row["tm_id"];
             $tm_name = $row["tm_name"];
@@ -89,35 +97,36 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
             $grm_email = $row["grm_email"];
             $grm_pre = $row["grm_pre"];
 
-            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $tm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $rm_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($tm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer($rm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
             // echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $nsm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $grm_name, $dealer_id, $task_id, $db);
-            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), 'Wasi Sheikh', $dealer_id, $task_id, $db);
-            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), 'Abdul Basit', $dealer_id, $task_id, $db);
+            echo smtp_mailer($grm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('wasi.shaikh@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
 
+        }
+
+        $eng = "SELECT us.* FROM department_users as du
+        join users as us on us.privilege=du.id
+        where du.department_id=10 and du.name='FE-MANAGER'";
+
+        $result_eng = mysqli_query($db, $eng);
+
+        $count_eng = mysqli_num_rows($result_eng);
+        // echo $count_contact . ' hamza <br>';
+
+        if ($count_eng > 0) {
+            while ($row = mysqli_fetch_array($result_eng)) {
+                $name = $row["name"];
+                $email = $row["login"];
+
+
+                echo smtp_mailer($email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+
+            }
         }
     }
 
-    $eng = "SELECT us.* FROM department_users as du
-    join users as us on us.privilege=du.id
-    where du.department_id=10 and du.name='FE-MANAGER'";
-
-    $result_eng = mysqli_query($db, $eng);
-
-    $count_eng = mysqli_num_rows($result_eng);
-    // echo $count_contact . ' hamza <br>';
-
-    if ($count_eng > 0) {
-        while ($row = mysqli_fetch_array($result_eng)) {
-            $name = $row["name"];
-            $email = $row["login"];
-
-
-            echo smtp_mailer($email, date('Y-m-d H:i:s'), $name, $dealer_id, $task_id, $db);
-
-        }
-    }
 
 
 
@@ -363,7 +372,8 @@ function count_per($connect, $task_id, $dealer_id, $db)
 
 
     // Calculate percentage
-    $percentage = ($total_sum > 0) ? (($total_sum - $r_n_a) / $total_sum) * 100 : 0;
+    // $percentage = ($total_sum > 0) ? (($total_sum - $r_n_a) / $total_sum) * 100 : 0;
+    $percentage = ($total_sum > 0) ? ($r_yes/($total_sum - $r_n_a)) * 100 : 0;
 
     // Append data to the HTML table
     $table1 .= '<tr>
@@ -416,9 +426,9 @@ function smtp_mailer($to, $time, $dealer_name, $dealer_id, $task_id, $db)
     $mail->Port = 587;
     $mail->IsHTML(true);
     $mail->CharSet = 'UTF-8';
-    $mail->Username = "mail.p2pbridge@gmail.com";
-    $mail->Password = "hfnsbnkvauakgepf";
-    $mail->SetFrom("mail.p2pbridge@gmail.com");
+    $mail->Username = "byco.alertinfo@gmail.com";
+    $mail->Password = "cocrqreeqfbovzvi";
+    $mail->SetFrom("byco.alertinfo@gmail.com");
     $mail->AddAddress($to);
     $mail->WordWrap = 50; //Sets word wrapping on the body of the message to a given number of characters
     $mail->IsHTML(true); //Sets message type to HTML				

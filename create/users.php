@@ -1,5 +1,5 @@
 <?php
-include("../config.php");
+include ("../config.php");
 session_start();
 if (isset($_POST)) {
     $user_id = $_POST['user_id'];
@@ -9,128 +9,48 @@ if (isset($_POST)) {
     $password_enc = mysqli_real_escape_string($db, $_POST['confirm_password']);
     $encriped = md5($password_enc);
     $number = mysqli_real_escape_string($db, $_POST['number']);
-    // $privilege = mysqli_real_escape_string($db,$_POST['privilege']); 
-    $role = mysqli_real_escape_string($db, $_POST['role']);
-    $sales_role = mysqli_real_escape_string($db, $_POST['sales_role']);
 
-    if($role=='Department'){
-        $sales_role = $role;
-    }
-
-    function sales_role($main_id, $db, $user_id)
-    {
-        $date = date('Y-m-d H:i:s');
-        $sales_role = mysqli_real_escape_string($db, $_POST['sales_role']);
-
-        if ($sales_role == 'TM') {
-            $zm = mysqli_real_escape_string($db, $_POST['zm']);
-
-
-            $query = "INSERT INTO `users_zm_tm`
-            (`zm_id`,
-            `tm_id`,
-            `created_by`,
-            `created_at`)
-            VALUES
-            ('$zm',
-            '$main_id',
-            '$date',
-            '$user_id');";
-
-            if (mysqli_query($db, $query)) {
-
-
-                echo 1;
-
-            } else {
-                echo 'Error' . mysqli_error($db) . '<br>' . $query;
-
-            }
-        }else{
-            if ($sales_role == 'ASM') {
-                $tm = mysqli_real_escape_string($db, $_POST['tm']);
+    $regions = $_POST['regions'];
     
-    
-                $query = "INSERT INTO `users_asm_tm`
-                (`tm_id`,
-                `asm_id`,
-                `created_by`,
-                `created_at`)
-                VALUES
-                ('$tm',
-                '$main_id',
-                '$date',
-                '$user_id');";
-    
-                if (mysqli_query($db, $query)) {
-    
-    
-                    echo 1;
-    
-                } else {
-                    echo 'Error' . mysqli_error($db) . '<br>' . $query;
-    
-                }
-            }
-        }
+    $myString = implode(", ", $regions);
 
 
-    }
 
-    function logistics($main_id, $db, $user_id)
-    {
-        $role = mysqli_real_escape_string($db, $_POST['logistics_role']);
-        $date = date('Y-m-d H:i:s');
-        $query = "INSERT INTO `users_logistics`
-        (`role`,
-        `logistics_id`,
-        `created_by`,
-        `created_at`)
-        VALUES
-        ('$role',
-        '$main_id',
-        '$date',
-        '$user_id');";
+    // echo 'HAmza';
+    if ($_POST["row_id"] != '') {
+        
+        $id = $_POST["row_id"];
+
+        $query = "UPDATE users SET name='$name',
+        password='$encriped',
+        description='$password',
+        telephone='$number',
+        email='$email',
+        region='$myString'
+        WHERE id='$id'";
+
+
 
         if (mysqli_query($db, $query)) {
-
-
             echo 1;
+
+            // $output = 1;
 
         } else {
             echo 'Error' . mysqli_error($db) . '<br>' . $query;
 
         }
 
-    }
-    // echo 'HAmza';
-    if ($_POST["row_id"] != '') {
-
-
     } else {
 
 
-        $query = "INSERT INTO  users (`name`,`privilege`,`login`, `password`,`usersettings_id`,`status`,`description`,`email`,`telephone`)
-        VALUES ('$name', '$sales_role', '$email', '$encriped','1','1','$password','$email','$number')";
+        $query = "INSERT INTO  users (`name`,`privilege`,`login`, `password`,`usersettings_id`,`status`,`description`,`email`,`telephone`,`region`)
+        VALUES ('$name', 'NSM', '$email', '$encriped','1','1','$password','$email','$number','$myString')";
 
 
 
         if (mysqli_query($db, $query)) {
-            $main_id = mysqli_insert_id($db);
-
-            if ($role == 'Logistics') {
-
-                logistics($main_id, $db, $user_id);
-            } elseif ($role == 'Sales') {
-                sales_role($main_id, $db, $user_id);
-            }
-            elseif($sales_role == 'ZM'){
-                echo 1;
-            }
-            else{
-                echo 1;
-
-            }
+            echo 1;
 
             // $output = 1;
 

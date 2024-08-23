@@ -53,6 +53,9 @@ if ($pass != '') {
                     "name" => $name,
                     "terr" => $terr,
                     "region" => $region,
+                    "zm_name" => "",
+                    "tm_name" => "",
+                    "asm_name" => "",
                     "recon" => $myArray,
                 ];
 

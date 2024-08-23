@@ -11,6 +11,7 @@ if (isset($_POST)) {
     $df_total = $_POST["df_total"];
     $task_id = $_POST["task_id"];
     $form_id = $_POST["form_id"];
+    $type = $_POST["type"];
 
     $product = $_POST["data"];
 
@@ -26,6 +27,7 @@ if (isset($_POST)) {
             `sf_total`,
             `df_total`,
             `dealer_id`,
+            `type`,
             `task_id`,
             `form_id`,
             `created_at`,
@@ -35,6 +37,7 @@ if (isset($_POST)) {
             '$sf_total',
             '$df_total',
             '$dealer_id',
+            '$type',
             '$task_id',
             '$form_id',
             '$datetime',
