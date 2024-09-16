@@ -190,8 +190,8 @@ if (isset($_POST)) {
                                             '$form_name',
                                             '$active',
                                             'hec_response',
-                                            'survey_category',
-                                            'survey_category_questions',
+                                            'hec_category',
+                                            'hec_category_questions',
                                             '$datetime',
                                             '$user_id');";
 

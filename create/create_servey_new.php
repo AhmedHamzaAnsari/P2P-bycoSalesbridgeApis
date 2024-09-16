@@ -176,7 +176,7 @@ if (isset($_POST)) {
 
             echo $output;
 
-            send_email($user_id, $dealer_id, $inspection_id);
+            // send_email($user_id, $dealer_id, $inspection_id);
 
         }
     }

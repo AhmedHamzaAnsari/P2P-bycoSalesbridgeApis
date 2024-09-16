@@ -32,7 +32,7 @@ if ($pass != '') {
             $myArray = [];
 
             $get_orders = "SELECT dz.*,ap.name as product_name,ds.name as dispenser_name,dl.lorry_no as tank_name,
-            (SELECT new_reading FROM dealers_nozzel_readings where nozle_id=dz.id order by id desc limit 1) as new_reading 
+            (SELECT new_reading FROM dealers_nozzel_readings where nozle_id=dz.id  order by created_at desc limit 1) as new_reading 
             FROM dealers_nozzel dz 
             join dealers_products as dp on dp.id=dz.products
             join dealers_dispenser as ds on ds.id=dz.dispenser_id

@@ -11,7 +11,10 @@ if ($pass != '') {
         $myusername = $_GET['username'];
         $mypassword = $_GET['password'];
 
-        $sql = "SELECT * FROM users WHERE login = '$myusername' and description = '$mypassword'";
+        $sql = "SELECT us.*,du.name as role,du.department_id,du.is_parent,du.parent_id,dt.name as department_name,dup.name as parent_user_name,dup.id as parent_user_id FROM users as us 
+        left join department_users as du on du.id=us.privilege
+        left join department as dt on dt.id=du.department_id
+        left join users as dup on dup.id=us.subacc_id where us.login='$myusername' and us.description='$mypassword'";
 
         // echo $sql;
 

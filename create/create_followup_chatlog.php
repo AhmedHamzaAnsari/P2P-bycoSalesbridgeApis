@@ -34,6 +34,17 @@ if (isset($_POST)) {
 
             $output = 1;
 
+            $notification = "INSERT INTO `bycobridge`.`followup_notification`
+            (`followup_id`,
+            `status`,
+            `created_at`,
+            `created_by`)
+            VALUES
+            ('$followup_id',
+            '0',
+            '$date',
+            '$user_id');";
+            mysqli_query($db, $notification);
         } else {
             $output = 'Error' . mysqli_error($db) . '<br>' . $query;
 

@@ -10,7 +10,8 @@ $id=$_GET['id'];
 if ($pass != '') {
     if ($pass == $access_key) {
         $sql_query1 = "SELECT df.*,fi.name as form_name FROM department_forms as df
-        join inspection_form as fi on fi.id=df.form_id where department_id='$id'";
+
+        join inspection_form as fi on fi.id=df.form_id where department_id='$id' order by fi.name asc";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 
