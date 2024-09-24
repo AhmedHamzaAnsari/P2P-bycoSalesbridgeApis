@@ -8,6 +8,8 @@ $pass = $_GET["key"];
 if (!empty($pass)) {
     if ($pass == $access_key) {
         $dealer_id = intval($_GET["dealer_id"]);
+        $tm_id = intval($_GET["tm_id"]);
+
         $from = $db->real_escape_string($_GET["from"]);
         $to = $db->real_escape_string($_GET["to"]);
         $products = $db->real_escape_string($_GET["products"]);
@@ -18,7 +20,7 @@ if (!empty($pass)) {
         FROM dealer_stock_recon_new 
         WHERE created_at >= '$from' 
         AND created_at <= '$to' 
-        AND dealer_id = '$dealer_id'";
+        AND dealer_id = '$dealer_id' and created_by='$tm_id'";
 
         $result_recon_dater = mysqli_query($db, $recon_dater);
 
@@ -33,9 +35,7 @@ if (!empty($pass)) {
                 JOIN dealers as dl on dl.id = it.dealer_id
                 JOIN users as us on us.id = it.user_id
                 WHERE dl.id = $dealer_id 
-                AND it.id IN($task_ids)
-                AND DATE(it.time) >= '$from' 
-                AND DATE(it.time) <= '$to';";
+                AND it.id IN($task_ids);";
 
                 $result = $db->query($sql);
 
@@ -76,8 +76,8 @@ if (!empty($pass)) {
                                                 'territory' => $terr,
                                                 'region' => $region,
                                                 'product_name' => $row_2['product_name'],
-                                                'opening_date' => $row_2['last_recon_date'],
-                                                'closing_date' => $row_2['created_at'],
+                                                'opening_date' => date('Y-m-d', strtotime($row_2['last_recon_date'])),
+                                                'closing_date' => date('Y-m-d', strtotime($row_2['created_at'])),
                                                 'no_os_days' => $row_2['total_days'],
                                                 'daily_sales' => $row_2['average_daily_sales'],
                                                 'opening_stock' => $row_2['sum_of_opening'],

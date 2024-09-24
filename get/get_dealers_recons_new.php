@@ -9,6 +9,7 @@ if (!empty($pass)) {
     if ($pass == $access_key) {
         // Sanitize dealer_id
         $dealer_id = intval($_GET["dealer_id"]);
+        $tm_id = intval($_GET["tm_id"]);
         $from = $db->real_escape_string($_GET["from"]);
         $to = $db->real_escape_string($_GET["to"]);
 
@@ -18,9 +19,9 @@ if (!empty($pass)) {
         // Query to get task_ids
         $recon_dater = "SELECT GROUP_CONCAT(DISTINCT(task_id)) AS task_ids 
                         FROM dealer_stock_recon_new 
-                        WHERE created_at >= '$from' 
-                        AND created_at <= '$to' 
-                        AND dealer_id = '$dealer_id'";
+                        WHERE date(created_at) >= '$from' 
+                        AND date(created_at) <= '$to' 
+                        AND dealer_id = '$dealer_id' and created_by='$tm_id'";
 
         $result_recon_dater = mysqli_query($db, $recon_dater);
         
@@ -35,9 +36,7 @@ if (!empty($pass)) {
                         JOIN dealers AS dl ON dl.id = it.dealer_id
                         JOIN users AS us ON us.id = it.user_id
                         WHERE dl.id = $dealer_id 
-                        AND it.id IN($task_ids)
-                        AND DATE(it.time) >= '$from' 
-                        AND DATE(it.time) <= '$to'";
+                        AND it.id IN($task_ids)";
 
                 $result = $db->query($sql);
 
@@ -120,8 +119,8 @@ if (!empty($pass)) {
                                                 $record_data['diesel_variance'] = $row_2['variance'];
                                                 $record_data['diesel_variance_percentage'] = round($row_2['variance_of_sales'], 2);
                                                 $record_data['no_os_days'] = $row_2['total_days']; 
-                                                $record_data['opening_date'] = $row_2['last_recon_date']; 
-                                                $record_data['closing_date'] = $row_2['created_at']; 
+                                                $record_data['opening_date'] = date('Y-m-d', strtotime($row_2['last_recon_date'])); 
+                                                $record_data['closing_date'] = date('Y-m-d', strtotime($row_2['created_at'])); 
                                                 $record_data['diesel_daily_sales'] = round($row_2['average_daily_sales'], 2);
                                                 $record_data['diesel_remark'] = $row_2['remark'];
                                             }

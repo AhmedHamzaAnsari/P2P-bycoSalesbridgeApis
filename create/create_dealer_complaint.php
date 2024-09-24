@@ -13,6 +13,12 @@ if (isset($_POST)) {
 
     $date = date('Y-m-d H:i:s');
 
+    $file = rand(1000, 100000) . "-" . $_FILES['file']['name'];
+    $file_loc = $_FILES['file']['tmp_name'];
+    $file_size = $_FILES['file']['size'];
+    //  $file_type = $_FILES['file']['type'];
+    $folder = "../uploads/";
+    move_uploaded_file($file_loc, $folder . $file);
     // echo 'HAmza';
     if ($_POST["row_id"] != '') {
 
@@ -25,6 +31,7 @@ if (isset($_POST)) {
         `damage`,
         `text`,
         `cause_text`,
+        `file`,
         `created_at`,
         `created_by`)
         VALUES
@@ -33,6 +40,7 @@ if (isset($_POST)) {
         '$damage',
         '$text',
         '$cause_text',
+        '$file',
         '$date',
         '$dealer_id');";
 
