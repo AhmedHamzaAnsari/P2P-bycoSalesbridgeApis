@@ -11,7 +11,7 @@ if ($pass != '') {
         $myusername = $_GET['username'];
         $mypassword = $_GET['password'];
 
-        $sql_query1 = "SELECT * FROM dealers where contact='$myusername' and password='$mypassword';";
+        $sql_query1 = "SELECT * FROM dealers where sap_no='$myusername' and password='$mypassword';";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 

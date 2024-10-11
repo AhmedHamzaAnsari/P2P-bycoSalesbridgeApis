@@ -1,7 +1,7 @@
 <?php
 //fetch.php  
 include("../../config.php");
-
+error_reporting(0);
 $access_key = '03201232927';
 
 $pass = $_GET["key"];
