@@ -28,7 +28,6 @@ if (isset($_POST)) {
             `total_amount`,
             `product_json`,
             `legder_balance`,
-    
             `created_at`,
             `user_id`,
             `created_by`)

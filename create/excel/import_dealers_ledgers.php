@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Loop through each row in the CSV file
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     // Extract data from CSV row
-                    $dealer_name = $data[1];
                     $dealerr_code = $data[2];
+                    $dealer_name = $data[1];
                     $ledger = $data[3];
 
                     // SQL query to fetch dealer based on dealer code

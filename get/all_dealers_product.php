@@ -8,7 +8,7 @@ $access_key = '03201232927';
 $pass = $_GET["key"];
 if ($pass != '') {
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT *,pp.id as product_id,dl.name as dealer_name FROM dealers_products as p
+        $sql_query1 = "SELECT p.*,pp.id as product_id,dl.name as dealer_name,pp.name as product_name FROM dealers_products as p
         join all_products as pp on p.name=pp.id 
         join dealers as dl on dl.id=p.dealer_id
         order by p.update_time desc;";

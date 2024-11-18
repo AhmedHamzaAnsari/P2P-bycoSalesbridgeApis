@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $dealer_name = $data[1];
                     $dealerr_code = $data[2];
                     $product = $data[3];
-                    $freight = $data[4];
-                    $indent_price = $data[5];
+                    $freight = $data[5];
+                    $indent_price = $data[4];
                     $nozel_price = $data[6];
                     $from_date = $data[7];
                     $to_date = $data[8];

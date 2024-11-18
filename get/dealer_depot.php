@@ -9,7 +9,8 @@ $pass = $_GET["key"];
 if ($pass != '') {
     $dealer_id = $_GET["dealer_id"];
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT * FROM `dealers_depots` where dealers_id =$dealer_id;";
+        $sql_query1 = "SELECT dd.*,geo.consignee_name as depot_name FROM bycobridge.dealers_depots as dd 
+        join geofenceing as geo on geo.id=dd.depot_id where dd.dealers_id=$dealer_id;";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 

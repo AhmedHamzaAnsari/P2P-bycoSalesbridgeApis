@@ -5,6 +5,7 @@ if (isset($_POST)) {
 
 
     $user_id = $_POST['user_id'];
+    $orderno = $_POST['orderno'];
     $order_approval = $_POST['order_approval'];
     $approved_order_status = mysqli_real_escape_string($db, $_POST['approved_order_status']);
     $approved_order_description = mysqli_real_escape_string($db, $_POST['approved_order_description']);
@@ -17,6 +18,7 @@ if (isset($_POST)) {
 
     $query = "UPDATE `order_main` SET 
     `status`='$approved_order_status',
+    `order_no`='$orderno',
     `comment`='$approved_order_description',
     `approved_time`='$datetime' WHERE id=$order_approval";
 

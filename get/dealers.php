@@ -1,55 +1,66 @@
 <?php
-//fetch.php  
-include ("../config.php");
-
+// fetch.php  
+include("../config.php");
 
 $access_key = '03201232927';
-
-$pass = $_GET["key"];
-$pre = $_GET["pre"];
-$id = $_GET["user_id"];
+$pass = isset($_GET["key"]) ? $_GET["key"] : '';
+$pre = isset($_GET["pre"]) ? $_GET["pre"] : '';
+$id = isset($_GET["user_id"]) ? intval($_GET["user_id"]) : 0;
 
 if ($pass != '') {
     if ($pass == $access_key) {
         $thread = array();
-        if ($pre == 'Admin' || $pre=='NSM' || $pre=='GM') {
 
-            
-            $sql_query1 = "SELECT * FROM dealers where privilege='Dealer' order by id desc ;";
-            $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
+        if ($pre == 'Admin' || $pre == 'NSM' || $pre == 'GM' || $pre == 'Monit') {
+            // Admin/NSM/GM/Monit access query
+            $sql_query1 = "
+                SELECT *, 
+                (SELECT created_at FROM bycobridge.dealer_ledger_log WHERE dealer_id = dl.id order by id desc LIMIT 1) as ledger_update_time 
+                FROM dealers as dl 
+                WHERE privilege = 'Dealer' 
+                ORDER BY dl.id DESC
+            ";
 
+            $result1 = mysqli_query($db, $sql_query1);
+            if (!$result1) {
+                die("Error in SQL Query: " . mysqli_error($db));
+            }
 
-            while ($user = $result1->fetch_assoc()) {
+            while ($user = mysqli_fetch_assoc($result1)) {
                 $thread[] = $user;
             }
+
         } else {
+            // Regular user access query
+            if ($id > 0) {
+                $sql_query1 = "SELECT * FROM users WHERE dealer_ids != '' AND id = '$id' ORDER BY id DESC";
 
-            $sql_query1 = "SELECT * FROM users where dealer_ids!='' and id='$id' order by id desc;";
+                $result1 = mysqli_query($db, $sql_query1);
+                if (!$result1) {
+                    die("Error in SQL Query: " . mysqli_error($db));
+                }
 
-            $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
+                while ($user = mysqli_fetch_assoc($result1)) {
+                    $name = $user['name'];
+                    $dealers = $user['dealer_ids'];
 
-            $thread = array();
-            while ($user = $result1->fetch_assoc()) {
-                $name = $user['name'];
-                $dealers = $user['dealer_ids'];
+                    $sql_query2 = " SELECT *, 
+                        (SELECT created_at FROM bycobridge.dealer_ledger_log WHERE dealer_id = dl.id order by id desc LIMIT 1) as ledger_update_time 
+                        FROM dealers as dl 
+                        WHERE dl.id IN($dealers)
+                    ";
 
-                $sql_query2 = "SELECT * FROM dealers where id IN($dealers);";
-                // left join department_users as dup on dup.id=du.parent_id order by du.id asc;";
+                    $result2 = mysqli_query($db, $sql_query2);
+                    if (!$result2) {
+                        die("Error in SQL Query: " . mysqli_error($db));
+                    }
 
-                $result2 = $db->query($sql_query2) or die("Error :" . mysqli_error());
-
-
-                while ($user2 = $result2->fetch_assoc()) {
-                    $thread[] = $user2;
-
-
-
-
+                    while ($user2 = mysqli_fetch_assoc($result2)) {
+                        $thread[] = $user2;
+                    }
                 }
             }
         }
-
-
 
         echo json_encode($thread);
 
@@ -60,6 +71,4 @@ if ($pass != '') {
 } else {
     echo 'Key is Required';
 }
-
-
 ?>
