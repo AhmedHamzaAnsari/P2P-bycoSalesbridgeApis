@@ -22,7 +22,7 @@ if (isset($_POST)) {
     
 
     $query = "UPDATE `uni_order` SET
-    `image`='$file'
+    `image`='$f_file'
      WHERE id=$order_id";
 
 
