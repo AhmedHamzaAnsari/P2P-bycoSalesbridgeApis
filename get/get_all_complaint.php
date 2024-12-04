@@ -9,7 +9,9 @@ $pass = $_GET["key"];
 if ($pass != '') {
     $dealer_id = $_GET["id"];
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT * FROM complaints order by id desc; ";
+        $sql_query1 = "SELECT cc.*,dl.name as dealer_name,dl.sap_no FROM complaints as cc
+        join dealers as dl on dl.id=cc.created_by
+        order by cc.id desc; ";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 

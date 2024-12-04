@@ -9,7 +9,9 @@ $pass = $_GET["key"];
 if ($pass != '') {
     $id = $_GET["id"];
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT *,'' as customer_id,'' as customer_name FROM order_shortage  order by id desc;";
+        $sql_query1 = "SELECT od.*,bt.sap_no as customer_id,bt.customername as customer_name FROM bycobridge.order_shortage as od
+        join gotrack.bycotrip bt on bt.id=od.order_id
+         order by od.id desc;";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error($db));
 
@@ -23,9 +25,7 @@ if ($pass != '') {
         echo 'Wrong Key...';
     }
 
-} 
-else 
-{
+} else {
     echo 'Key is Required';
 }
 

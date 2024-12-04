@@ -14,10 +14,22 @@ if (isset($_POST)) {
 
     // echo 'HAmza';
 
+    if ($approved_order_status == 0) {
+        $val = 'Pending';
+    } elseif ($approved_order_status == 1) {
+        $val = 'Approved';
 
+    } elseif ($approved_order_status == 2) {
+        $val = 'Placed (Hold)';
+
+    } elseif ($approved_order_status == 3) {
+        $val = 'Placed (Released)';
+
+    }
 
     $query = "UPDATE `order_main` SET 
     `status`='$approved_order_status',
+    `status_value`='$val',
     `order_no`='$orderno',
     `comment`='$approved_order_description',
     `approved_time`='$datetime' WHERE id=$order_approval";
@@ -25,13 +37,7 @@ if (isset($_POST)) {
 
     if (mysqli_query($db, $query)) {
 
-        if($approved_order_status!=1){
-            $val = 'Cancelled';
-        }
-        else{
-            $val = 'Approved';
-            
-        }
+
         $log = "INSERT INTO `order_detail_log`
         (`order_id`,
         `status`,
