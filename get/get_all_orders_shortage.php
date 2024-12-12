@@ -9,7 +9,7 @@ $pass = $_GET["key"];
 if ($pass != '') {
     $id = $_GET["id"];
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT od.*,bt.sap_no as customer_id,bt.customername as customer_name FROM bycobridge.order_shortage as od
+        $sql_query1 = "SELECT od.*,bt.sap_no as customer_id,bt.customername as customer_name,bt.sap_no as delivery_no FROM bycobridge.order_shortage as od
         join gotrack.bycotrip bt on bt.id=od.order_id
          order by od.id desc;";
 
