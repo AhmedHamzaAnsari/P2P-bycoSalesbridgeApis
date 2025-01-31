@@ -108,6 +108,8 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
             echo smtp_mailer('abasit9119@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
             echo smtp_mailer('ali.nazim@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
             echo smtp_mailer('usmanhameed@gmail.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            echo smtp_mailer('abid.khan@cnergyico.com', date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+
 
         }
     }
@@ -175,7 +177,7 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
         Site Name : ' . $row["dealer_name"] . ' <br/>
         Name of Auditor(s) : ' . $row['user_name'] . '<hr>';
     $sql_query1 = "SELECT rn.*,dp.name as product_name,dd.name as dealer_name FROM bycobridge.dealer_stock_recon_new  as rn
-        join all_products as dp on dp.id=rn.product_id
+       left join all_products as dp on dp.id=rn.product_id
         JOIN dealers AS dd ON dd.id = rn.dealer_id
         where rn.task_id=$task_id and rn.dealer_id=$dealer_id group by rn.product_id;
     ";

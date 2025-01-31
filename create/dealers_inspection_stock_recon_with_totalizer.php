@@ -32,6 +32,7 @@ if (isset($_POST)) {
 
     function new_totalizer($is_totalizer_data, $db, $dealer_id, $date, $user_id,$last_date)
     {
+        $output = '';
         $dataArray = json_decode($is_totalizer_data, true);
 
         if (is_array($dataArray)) {

@@ -9,7 +9,7 @@ $pass = $_GET["key"];
 $id=$_GET["dealer_id"];
 if ($pass != '') {
     if ($pass == $access_key) {
-        $sql_query1 = "SELECT *,pp.id as product_id FROM dealers_products as p
+        $sql_query1 = "SELECT p.*,pp.id as product_id,pp.name FROM dealers_products as p
         join all_products as pp on p.name=pp.id where p.dealer_id=$id;";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());

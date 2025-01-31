@@ -11,7 +11,7 @@ if (isset($_POST)) {
     $dpt_id = $_POST["dpt_id"];
     $form_id = $_POST["form_id"];
     $form_name = $_POST["form_name"];
-
+    $response = str_replace("'", '', $response);
     $datetime = date('Y-m-d H:i:s');
 
     $query_main = "INSERT INTO `survey_response_main`
