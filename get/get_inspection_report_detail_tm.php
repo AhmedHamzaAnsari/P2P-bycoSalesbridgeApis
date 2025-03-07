@@ -36,7 +36,7 @@ if (!empty($pass)) {
                            WHERE privilege = 'Dealer' AND id IN($dealer_ids) 
                            ORDER BY name ASC";
             $result1 = $db->query($sql_query1) or die("Error: " . $db->error);
-
+            $dealers = 0;
             while ($user = $result1->fetch_assoc()) {
                 $dealer_id = $user['id'];
                 $dealer_name = $user['name'];
@@ -86,6 +86,8 @@ if (!empty($pass)) {
                     }
                 }
             }
+
+            
 
             $report_data = array(
                 "id" => $tm_id,

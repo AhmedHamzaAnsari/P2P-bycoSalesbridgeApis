@@ -24,4 +24,5 @@ echo  $output;
 
 
 $db->close();
+
 ?>

@@ -9,6 +9,8 @@ if (isset($_POST)) {
     $task_id = $_POST['task_id'];
     $status = $_POST['status'];
     $reason = $_POST['description'];
+    $reason = str_replace("'", '', $reason);
+
 
     $file1 = rand(1000, 100000) . "-" . $_FILES['dealer_sign']['name'];
     $file_loc1 = $_FILES['dealer_sign']['tmp_name'];

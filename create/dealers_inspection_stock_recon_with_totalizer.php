@@ -25,7 +25,7 @@ if (isset($_POST)) {
 
     $total_days = $_POST["total_days"];
     $last_date = $_POST["last_date"];
-
+    $remark = str_replace("'", '', $remark);
 
 
     $date = date('Y-m-d H:i:s');

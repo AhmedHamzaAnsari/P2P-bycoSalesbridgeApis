@@ -14,7 +14,7 @@ if ($db->connect_error) {
 }
 
 // Fetch data
-$sql = "SELECT nn.*, us.playerId FROM bycobridge.push_notifications AS nn
+$sql = "SELECT nn.*, us.playerId FROM push_notifications AS nn
         LEFT JOIN users us ON us.id = nn.user_id WHERE nn.status = 0";
 $result = $db->query($sql);
 

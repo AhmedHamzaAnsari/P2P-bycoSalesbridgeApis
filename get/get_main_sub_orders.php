@@ -12,7 +12,8 @@ if ($pass != '') {
         $sql_query1 = "SELECT od.*,geo.name,geo_d.consignee_name,dp.name as product_name,geo.sap_no FROM order_detail as od 
         join dealers as geo on geo.id = od.cus_id 
        left join geofenceing as geo_d on geo_d.id=od.depot
-        join all_products as dp on dp.id=od.product_type
+        left join dealers_products as pp on pp.id=od.product_type
+        left join all_products as dp on dp.id=pp.name
         where od.main_id = $id  order by od.id desc";
 
         $result1 = $db->query($sql_query1) or die("Error :" . mysqli_error());
