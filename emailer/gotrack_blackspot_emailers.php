@@ -27,6 +27,7 @@ if (!empty($vehicle) && !empty($spot_name) && !empty($in_time)) {
     // List of CC email recipients
     $cc_emails = [
         'usmanhameed@gmail.com',
+        'fahadamir757@gmail.com',
         'abasit9119@gmail.com'
     ];
 

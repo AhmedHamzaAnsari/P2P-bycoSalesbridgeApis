@@ -12,8 +12,8 @@ $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 ini_set('memory_limit', '-1');
 set_time_limit(500);
 
-include ('class/class.phpmailer.php');
-include ('pdf.php');
+include('class/class.phpmailer.php');
+include('pdf.php');
 
 $today = date("Y-m-d");
 $_to_today = date("Y-m-d H:i:s");
@@ -113,6 +113,27 @@ if ($dealer_id != "" && $task_id != "" && $tm_id != "") {
 
 
         }
+
+        $nsm_users = "SELECT *
+        FROM bycobridge.users
+        WHERE FIND_IN_SET('$region', REPLACE(region, ', ', ',')) > 0
+        AND privilege = 'NSM'";
+
+        $result_nsm_users = mysqli_query($db, $nsm_users);
+
+        if (mysqli_num_rows($result_nsm_users) > 0) {
+            while ($row = mysqli_fetch_assoc($result_nsm_users)) {
+                $nsm_name = $row['name'];
+                $nsm_email = $row['login'];
+
+                // Send email to each NSM user
+                echo smtp_mailer($nsm_email, date('Y-m-d H:i:s'), $dealer_name, $dealer_id, $task_id, $db);
+            }
+        } else {
+            echo "No NSM users found for region: $region";
+        }
+
+
     }
 
 
@@ -437,7 +458,8 @@ function get_task_inspection_response($connect, $task_id, $dealer_id, $db)
 }
 
 // Helper function to format amounts
-function format_amount($amount) {
+function format_amount($amount)
+{
     if (is_numeric($amount)) {
         return number_format($amount, 2);
     }

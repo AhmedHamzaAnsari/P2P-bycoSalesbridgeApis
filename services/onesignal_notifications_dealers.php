@@ -15,7 +15,7 @@ if ($db->connect_error) {
 
 // Fetch data
 $sql = "SELECT nn.*, us.playerId FROM push_notifications AS nn
-        LEFT JOIN users us ON us.id = nn.user_id WHERE nn.status = 0 and nn.type='sales'";
+LEFT JOIN dealers us ON us.id = nn.user_id WHERE nn.status = 0 and nn.type='dealers' and us.playerId!=''";
 $result = $db->query($sql);
 
 if ($result->num_rows > 0) {

@@ -19,7 +19,7 @@ if (!empty($pass)) {
                     FROM bycobridge.department_users as du 
                     JOIN users as us ON us.privilege = du.id
                     JOIN department as dt ON dt.id = du.department_id
-                    WHERE dt.name = 'Retail Network' AND du.name = 'TM'";
+                    WHERE dt.name = 'Retail Network' AND du.name = 'TM' and dealer_ids!=''";
 
         $result_tm = $db->query($sql_tms) or die("Error: " . $db->error);
 
